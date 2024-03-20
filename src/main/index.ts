@@ -25,7 +25,6 @@ function createWindow(): void {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
-
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -50,9 +49,13 @@ app.whenReady().then(() => {
   })
 
   // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
+  ipcMain.on('printer', () => console.log('pong'))
+  ipcMain.on('song',() => console.log('song')) // 定义响应事件
+  ipcMain.handle('ping', () => 'pong')
   createWindow()
+  /**
+   * 获取版本
+   * */
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

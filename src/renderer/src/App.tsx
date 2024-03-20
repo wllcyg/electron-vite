@@ -1,8 +1,10 @@
 import Versions from './components/Versions'
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
+  const ipcHandle = (): void => window.electron.ipcRenderer.send('song')
+  const handleClick = (): void => {
+    window.version.ping().then(e => console.log(e))
+  }
   return (
     <>
       <div className="actions">
@@ -14,6 +16,11 @@ function App(): JSX.Element {
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
             Send IPC
+          </a>
+        </div>
+        <div className="action">
+          <a target="_blank" rel="noreferrer" onClick={handleClick}>
+            test
           </a>
         </div>
       </div>
