@@ -1,16 +1,17 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-type versionFun = () => void
+type versionFun = (...args: string[]) => void
 export interface versionInt {
-  [key: string] : versionFun
+  [key: string]: versionFun
 }
 // Custom APIs for renderer
 const api = {}
-const version:versionInt = {
-  'node': () => process.versions.node,
-  'chrome': () => process.versions.chrome,
-  'electron': () => process.versions.electron,
-  'ping': () => ipcRenderer.invoke('ping')
+const version: versionInt = {
+  node: () => process.versions.node,
+  chrome: () => process.versions.chrome,
+  electron: () => process.versions.electron,
+  ping: () => ipcRenderer.invoke('ping'),
+  setTitle: (title: string) => ipcRenderer.send('set-title', title)
 }
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
