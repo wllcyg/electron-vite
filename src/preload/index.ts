@@ -5,22 +5,27 @@ export interface versionInt {
   [key: string]: versionFun
 }
 // Custom APIs for renderer
-const api = {}
+const api = {
+
+}
 const version: versionInt = {
   node: () => process.versions.node,
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
   ping: () => ipcRenderer.invoke('ping'),
-  setTitle: (title: string) => ipcRenderer.send('set-title', title)
+  setTitle: (title: string) => ipcRenderer.send('set-title', title),
+  openFile:() => ipcRenderer.invoke('dialog-open'),
 }
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('version', version)
+    // 暴露给主线程的api,向渲染线程展示
+    contextBridge.exposeInMainWorld('electronAPI', {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      onUpdateCounter: (callback:Function) => ipcRenderer.on('update-counter', (_event, value) => callback(value))
+    })
   } catch (error) {
     console.error(error)
   }

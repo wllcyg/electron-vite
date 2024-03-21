@@ -5,6 +5,7 @@ declare global {
   interface Window {
     electron: ElectronAPI
     api: unknown,
-    version: versionInt
+    version: versionInt,
+    electronAPI:versionInt
   }
 }

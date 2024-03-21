@@ -4,6 +4,7 @@ import { useState } from 'react'
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('song')
   const handleClick = (): void => {
+    // @ts-ignore
     window.version.ping().then(e => console.log(e))
   }
   const [titlealue, setTitlealue] = useState('')
@@ -11,10 +12,24 @@ function App(): JSX.Element {
   const changTitle = (): void => {
     window.version.setTitle(titlealue)
   }
+  const [filePath, setFilePath] = useState('')
+  const openFile = async () => {
+    console.log(window.version.openFile())
+    let res = await window.version.openFile()
+    // @ts-ignore
+    if (res){
+      setFilePath(res)
+    }
+  }
+  const [count, setCount] = useState(0)
+  // @ts-ignore
+  window.electronAPI.onUpdateCounter(value => {
+    setCount(value+count)
+  })
   return (
     <>
       <div className="actions">
-        <input type="text" value={titlealue}  onChange={e => setTitlealue(e.target.value)}/>
+        <input type="text" value={titlealue} onChange={e => setTitlealue(e.target.value)} />
         <div className="action">
           <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
             Documentation
@@ -36,6 +51,13 @@ function App(): JSX.Element {
           </a>
         </div>
       </div>
+      <p>文件地址 {filePath}</p>
+      <div className="action">
+        <a target="_blank" rel="noreferrer" onClick={openFile}>
+          打开文件
+        </a>
+      </div>
+      <p> 当前的数量 {count} </p>
       <Versions></Versions>
     </>
   )
