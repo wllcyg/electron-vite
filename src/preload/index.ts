@@ -5,16 +5,15 @@ export interface versionInt {
   [key: string]: versionFun
 }
 // Custom APIs for renderer
-const api = {
-
-}
+const api = {}
 const version: versionInt = {
   node: () => process.versions.node,
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
   ping: () => ipcRenderer.invoke('ping'),
   setTitle: (title: string) => ipcRenderer.send('set-title', title),
-  openFile:() => ipcRenderer.invoke('dialog-open'),
+  openFile: () => ipcRenderer.invoke('dialog-open'),
+
 }
 if (process.contextIsolated) {
   try {
@@ -24,7 +23,11 @@ if (process.contextIsolated) {
     // 暴露给主线程的api,向渲染线程展示
     contextBridge.exposeInMainWorld('electronAPI', {
       // eslint-disable-next-line @typescript-eslint/ban-types
-      onUpdateCounter: (callback:Function) => ipcRenderer.on('update-counter', (_event, value) => callback(value))
+      onUpdateCounter: (callback: Function) =>
+        ipcRenderer.on('update-counter', (_event, value) => callback(value)),
+      cancelBluetoothRequest: () => ipcRenderer.send('cancel-bluetooth-request'),
+      bluetoothPairingRequest: (callback) => ipcRenderer.on('bluetooth-pairing-request', () => callback()),
+      bluetoothPairingResponse: (response) => ipcRenderer.send('bluetooth-pairing-response', response)
     })
   } catch (error) {
     console.error(error)

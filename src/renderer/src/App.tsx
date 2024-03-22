@@ -26,6 +26,38 @@ function App(): JSX.Element {
   window.electronAPI.onUpdateCounter(value => {
     setCount(value+count)
   })
+  const testBlueTooth = async () => {
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true
+    })
+    console.log(device,'testBlueTooth')
+
+  }
+  window.electronAPI.bluetoothPairingRequest((event, details) => {
+    const response = {}
+
+    switch (details.pairingKind) {
+      case 'confirm': {
+        response.confirmed = window.confirm(`Do you want to connect to device ${details.deviceId}?`)
+        break
+      }
+      case 'confirmPin': {
+        response.confirmed = window.confirm(`Does the pin ${details.pin} match the pin displayed on device ${details.deviceId}?`)
+        break
+      }
+      case 'providePin': {
+        const pin = window.prompt(`Please provide a pin for ${details.deviceId}.`)
+        if (pin) {
+          response.pin = pin
+          response.confirmed = true
+        } else {
+          response.confirmed = false
+        }
+      }
+    }
+
+    window.electronAPI.bluetoothPairingResponse(response)
+  })
   return (
     <>
       <div className="actions">
@@ -58,6 +90,11 @@ function App(): JSX.Element {
         </a>
       </div>
       <p> 当前的数量 {count} </p>
+      <div className="action">
+        <a target="_blank" rel="noreferrer" onClick={testBlueTooth}>
+          蓝牙测试
+        </a>
+      </div>
       <Versions></Versions>
     </>
   )
