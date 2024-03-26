@@ -33,6 +33,7 @@ function App(): JSX.Element {
     console.log(device,'testBlueTooth')
 
   }
+  // @ts-ignore
   window.electronAPI.bluetoothPairingRequest((event, details) => {
     const response = {}
 
@@ -56,6 +57,7 @@ function App(): JSX.Element {
       }
     }
 
+    // @ts-ignore
     window.electronAPI.bluetoothPairingResponse(response)
   })
   return (

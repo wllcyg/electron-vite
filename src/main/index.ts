@@ -38,10 +38,10 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
-  ipcMain.on('cancel-bluetooth-request', (event) => {
+  ipcMain.on('cancel-bluetooth-request', () => {
     selectBluetoothCallback('')
   })
-  ipcMain.on('bluetooth-pairing-response', (event, response) => {
+  ipcMain.on('bluetooth-pairing-response', (_event, response) => {
     bluetoothPinCallback(response)
   })
   mainWindow.webContents.session.setBluetoothPairingHandler((details, callback) => {
@@ -54,34 +54,6 @@ function createWindow(): void {
     return { action: 'deny' }
   })
   // 添加计算按钮
-   const menu = Menu.buildFromTemplate([
-    {
-      label: '菜单',
-      submenu: [
-        {
-          click: () => mainWindow.webContents.send('update-counter', 1),
-          label: '添加'
-        },
-        {
-          click: () => mainWindow.webContents.send('update-counter', -1),
-          label: '减少'
-        }
-      ]
-    },
-     {
-       label: '菜单2',
-       submenu: [
-         {
-           click: () => mainWindow.webContents.send('update-counter', 1),
-           label: '添加'
-         },
-         {
-           click: () => mainWindow.webContents.send('update-counter', -1),
-           label: '减少'
-         }
-       ]
-     }
-  ])
   Menu.setApplicationMenu(null)
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
