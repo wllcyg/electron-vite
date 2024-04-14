@@ -1,7 +1,8 @@
 import type { ConfigEnv, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import { pluginExposeRenderer } from './vite.base.config';
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path');
 // https://vitejs.dev/config
 export default defineConfig((env) => {
   const forgeEnv = env as ConfigEnv<'renderer'>;
@@ -18,6 +19,9 @@ export default defineConfig((env) => {
     plugins: [pluginExposeRenderer(name)],
     resolve: {
       preserveSymlinks: true,
+      alias: {
+        '@': `${root}/src`,
+      }
     },
     clearScreen: false,
   } as UserConfig;
