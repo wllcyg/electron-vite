@@ -1,7 +1,7 @@
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
-  margin: auto;
-  max-width: 38rem;
-  padding: 2rem;
+
+.submit-btn{
+  text-align: right;
+}
+.submit-btn button{
+  margin-right: 16px;
 }

@@ -18,4 +18,5 @@ export class GoodsColum {
    * */
   @Column('int') // 类别
   category: number
+
 }

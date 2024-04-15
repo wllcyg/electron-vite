@@ -1,9 +1,9 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import path from 'path';
 import 'reflect-metadata'
 
 import { AppDataSource } from './db';
-
+import dbConfig from '@/db/server';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -39,7 +39,10 @@ app.on('ready', () => {
   AppDataSource.initialize().then(e => {
     console.log('this is ok')
   }).catch(e => {
-    console.log('this is error')
+    console.log('this is error',e)
+  })
+  ipcMain.handle('saveValue', (_, value) => {
+    return dbConfig.save(value)
   })
 });
 

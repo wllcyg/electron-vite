@@ -6,7 +6,7 @@ export interface versionInt {
   [key: string]: versionFun
 }
 const db: versionInt = {
-  saveValue:(value) => ipcRenderer.invoke('save-value',value),
+  saveValue:(value) => ipcRenderer.invoke('saveValue',value),
 }
 if (process.contextIsolated) {
   try {

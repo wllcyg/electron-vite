@@ -5,7 +5,7 @@ import { getBuildConfig, getBuildDefine, external, pluginHotRestart } from './vi
 // https://vitejs.dev/config
 export default defineConfig((env) => {
   const forgeEnv = env as ConfigEnv<'build'>;
-  const { forgeConfigSelf } = forgeEnv;
+  const { forgeConfigSelf,root } = forgeEnv;
   const define = getBuildDefine(forgeEnv);
   const config: UserConfig = {
     build: {
@@ -23,7 +23,9 @@ export default defineConfig((env) => {
     resolve: {
       // Load the Node.js entry.
       mainFields: ['module', 'jsnext:main', 'jsnext'],
-
+      alias: {
+        '@': `${root}/src`,
+      }
     },
   };
 

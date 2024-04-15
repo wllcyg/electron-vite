@@ -20,6 +20,9 @@ declare global {
     VITE_DEV_SERVER_URL: `${string}_VITE_DEV_SERVER_URL`;
     VITE_NAME: `${string}_VITE_NAME`;
   }
+  interface Window{
+    db:any
+  }
 }
 
 declare module 'vite' {
@@ -28,4 +31,5 @@ declare module 'vite' {
     forgeConfig: VitePluginConfig;
     forgeConfigSelf: VitePluginConfig[K][number];
   }
+
 }
