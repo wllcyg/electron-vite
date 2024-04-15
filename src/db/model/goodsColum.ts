@@ -16,7 +16,7 @@ export class GoodsColum {
    * @param
    *
    * */
-  @Column('int') // 类别
-  category: number
+  @Column('text') // 类别
+  category: string
 
 }
