@@ -3,6 +3,7 @@ import { GoodsColum } from '../model/goodsColum';
 import { OrderList } from '@/db/model/OrderList';
 import { OrderLog } from '@/db/model/OrderLog';
 import { ResType } from '@/pages/type';
+import { DataType } from '@/pages/type';
 type OrderEntityType = typeof GoodsColum;
 const orderType: Record<string, OrderEntityType> = {
   'GoodsColum': GoodsColum,
@@ -64,6 +65,25 @@ export class DbConfig {
         .catch(err =>{
           reject(this.resError)
           console.log(err);
+        })
+    })
+  }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  updateValue({type='OrderList',data}){
+    console.log('OrderList');
+    return new Promise((resolve,reject) => {
+      AppDataSource
+        .createQueryBuilder()
+        .update(orderType[type])
+        .set(data)
+        .where({id:data.id})
+        .execute()
+        .then(e => {
+          console.log(e,'this is e ');
+        })
+        .catch(err =>{
+          console.log(err,'this is e ');
         })
     })
   }

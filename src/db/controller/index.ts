@@ -4,6 +4,9 @@ export default function controller (){
   ipcMain.handle('saveValue', (_, value) => {
     return dbConfig.save(value)
   })
+  ipcMain.handle('updateValue', (_, value) => {
+    return dbConfig.updateValue(value)
+  }),
   ipcMain.handle('findValue', (_, value) => {
     return dbConfig.findValue(value)
   })

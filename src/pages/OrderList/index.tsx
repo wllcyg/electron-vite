@@ -7,13 +7,16 @@ import { useSelect, useHeight } from '@/render/hooks';
 import { SaveInter, DataType } from '@/pages/type';
 
 interface AddCom {
-  changeStatus: () => void;
+  changeStatus: () => void,
   visible: boolean,
-  title: string
+  title: string,
+  setTitle?: (title: string) => void,
+  isEdit: boolean,
+  setIsEdit: (val: boolean) => void
 }
 
 
-const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
+const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTitle, isEdit, setIsEdit }) => {
   const colums: TableProps<DataType>['columns'] = [
     {
       title: '名称',
@@ -58,7 +61,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
       render: (_, record) => {
         return (
           <div>
-            <Button type="link" onClick={() => handleEdit(record) }>编辑</Button>
+            <Button type="link" onClick={() => handleEdit(record)}>编辑</Button>
             <Button type="link">出库</Button>
             <Button type="link" danger>删除</Button>
           </div>);
@@ -70,21 +73,28 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
   const [optionsList] = useSelect();
   const [innerHeight] = useHeight(390);
   const [tableSource, setTableSource] = useState([]);
-  const handleEdit = async (record:DataType) =>{
-    const res = await window.db.findOne({id:record.id})
-    const { code, data } = res
-    if (code === 200){
+  const handleEdit = async (record: DataType) => {
+    const res = await window.db.findOne({ id: record.id });
+    const { code, data } = res;
+    if (code === 200) {
       changeStatus();
+      setTitle('编辑页面');
+      setIsEdit(false)
+      data.createdAt = dayjs(data.createdAt);
+      form.setFieldsValue(data);
     }
-  }
-  const saveValue = () => {
+  };
+
+  const saveValue = (type:string) => {
     form.validateFields().then(async (data) => {
       data.createdAt = dayjs().format('YYYY/MM/DD');
       const saveObj: SaveInter = {
         type: 'OrderList',
         data
       };
-      const res = await window.db.saveValue(saveObj);
+      let res;
+      if (type === 'save') res = await window.db.saveValue(saveObj);
+      if (type === 'update') res = await window.db.updateValue(saveObj);
       if (res.code === 200) {
         message.info(res.msg);
         changeStatus();
@@ -163,7 +173,10 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
           </Form.Item>
         </Form>
         <div className="submit-btn">
-          <Button type="primary" onClick={() => saveValue()}>保存</Button>
+          {
+            isEdit ? <Button type="primary" onClick={() => saveValue('save')}>保存</Button> :
+              <Button type="primary" onClick={() => saveValue('update')}>更新</Button>
+          }
           <Button onClick={changeStatus}>取消</Button>
         </div>
       </Drawer>
@@ -173,17 +186,21 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
 
 const OrderList = () => {
   const [visible, setBVisible] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [title, setTitle] = useState('新增商品');
   const changeStatus = () => {
     setBVisible(!visible);
   };
   const addItem = () => {
+    setIsEdit(true);
+    setTitle('新增商品')
     changeStatus();
   };
   return (
     <div>
       <Search addItem={addItem} />
-      <AddOrderOrEdit visible={visible} changeStatus={changeStatus} title={title} />
+      <AddOrderOrEdit visible={visible} changeStatus={changeStatus} title={title} setTitle={setTitle} isEdit={isEdit}
+                      setIsEdit={setIsEdit} />
     </div>
   );
 };
