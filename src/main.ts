@@ -4,6 +4,7 @@ import 'reflect-metadata'
 
 import { AppDataSource } from './db';
 import dbConfig from '@/db/server';
+import controller from '@/db/controller';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -12,7 +13,7 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1480,
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -41,9 +42,7 @@ app.on('ready', () => {
   }).catch(e => {
     console.log('this is error',e)
   })
-  ipcMain.handle('saveValue', (_, value) => {
-    return dbConfig.save(value)
-  })
+  controller()
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

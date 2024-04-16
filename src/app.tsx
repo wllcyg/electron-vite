@@ -6,7 +6,7 @@ import { ConfigProvider } from 'antd';
 import routers from '@/render/router';
 import './index.css'
 ReactDOM.createRoot(document.getElementById("app")).render(
-    <Suspense>
+    <Suspense fallback={<h1>Loading...</h1>}>
       <ConfigProvider locale={zhCN}>
         <RouterProvider router={routers} />
       </ConfigProvider>

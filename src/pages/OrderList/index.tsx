@@ -1,9 +1,10 @@
 import Search from '@/pages/OrderList/Search';
 import dayjs from 'dayjs';
-import { Drawer, Form, Input, Button, InputNumber, DatePicker, message, Select } from 'antd';
+import { Drawer, Form, Input, Button, InputNumber, DatePicker, message, Select, Table } from 'antd';
+import type { TableProps } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useSelect } from '@/render/hooks';
-import { SaveInter } from '@/pages/type';
+import { useSelect, useHeight } from '@/render/hooks';
+import { SaveInter, DataType } from '@/pages/type';
 
 interface AddCom {
   changeStatus: () => void;
@@ -11,11 +12,71 @@ interface AddCom {
   title: string
 }
 
+
 const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
+  const colums: TableProps<DataType>['columns'] = [
+    {
+      title: '名称',
+      dataIndex: 'ordername',
+      key: 'ordername',
+      align: 'center'
+    },
+    {
+      title: '规格',
+      dataIndex: 'specification',
+      key: 'specification',
+      align: 'center'
+    },
+    {
+      title: '类别',
+      dataIndex: 'category',
+      key: 'category',
+      align: 'center'
+    },
+    {
+      title: '价格',
+      dataIndex: 'price',
+      key: 'price',
+      align: 'center'
+    },
+    {
+      title: '数量',
+      dataIndex: 'count',
+      key: 'count',
+      align: 'center'
+    },
+    {
+      title: '入库时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      align: 'center'
+    },
+    {
+      title: '操作',
+      align: 'center',
+      width: '230px',
+      render: (_, record) => {
+        return (
+          <div>
+            <Button type="link" onClick={() => handleEdit(record) }>编辑</Button>
+            <Button type="link">出库</Button>
+            <Button type="link" danger>删除</Button>
+          </div>);
+      }
+    }
+  ];
   const dateFormat = 'YYYY/MM/DD';
   const [form] = Form.useForm();
   const [optionsList] = useSelect();
-  console.log(optionsList, 'optionsListoptionsList');
+  const [innerHeight] = useHeight(390);
+  const [tableSource, setTableSource] = useState([]);
+  const handleEdit = async (record:DataType) =>{
+    const res = await window.db.findOne({id:record.id})
+    const { code, data } = res
+    if (code === 200){
+      changeStatus();
+    }
+  }
   const saveValue = () => {
     form.validateFields().then(async (data) => {
       data.createdAt = dayjs().format('YYYY/MM/DD');
@@ -24,15 +85,28 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
         data
       };
       const res = await window.db.saveValue(saveObj);
-      console.log(res, 'this is resvalie');
-      message.info(res.msg);
+      if (res.code === 200) {
+        message.info(res.msg);
+        changeStatus();
+        findList();
+      }
     }).catch((err) => {
       console.log(err, 'this is err');
     });
   };
+  const findList = async () => {
+    const res = await window.db.findValue({ page: 1, size: 10 });
+    const { code, data: { result, count } } = res;
+    if (code === 200) setTableSource(result);
+  };
+  useEffect(() => {
+    findList();
+  }, []);
 
   return (
     <div>
+      <Table bordered dataSource={tableSource} rowKey="id" columns={colums} scroll={{ y: innerHeight }}
+             className="mt-12" />
       <Drawer open={visible} title={title} width={450} onClose={() => changeStatus()}>
         <Form
           form={form}
@@ -58,7 +132,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title }) => {
             name="category"
             rules={[{ required: true, message: '请选择类别' }]}
           >
-            <Select>
+            <Select placeholder="请选择类别">
               {
                 optionsList.map(item => (<Select.Option key={item.key} value={item.key}>
                   {item.value}

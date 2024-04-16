@@ -7,6 +7,8 @@ export interface versionInt {
 }
 const db: versionInt = {
   saveValue:(value) => ipcRenderer.invoke('saveValue',value),
+  findValue:(value) => ipcRenderer.invoke('findValue',value),
+  findOne:(value) => ipcRenderer.invoke('findOne',value),
 }
 if (process.contextIsolated) {
   try {
