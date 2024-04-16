@@ -1,10 +1,11 @@
 import Search from '@/pages/OrderList/Search';
 import dayjs from 'dayjs';
 import { Drawer, Form, Input, Button, InputNumber, DatePicker, message, Select, Table } from 'antd';
-import type { TableProps } from 'antd';
+import type { TableProps,PaginationProps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useSelect, useHeight } from '@/render/hooks';
 import { SaveInter, DataType } from '@/pages/type';
+import { CategoryEnum } from '@/db/model/enum';
 
 interface AddCom {
   changeStatus: () => void,
@@ -17,6 +18,8 @@ interface AddCom {
 
 
 const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTitle, isEdit, setIsEdit }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const colums: TableProps<DataType>['columns'] = [
     {
       title: '名称',
@@ -34,10 +37,19 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
       title: '类别',
       dataIndex: 'category',
       key: 'category',
-      align: 'center'
+      align: 'center',
+      render: (_, { category }) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const type = CategoryEnum[category];
+        return (
+          <div>
+            {type}
+          </div>);
+      }
     },
     {
-      title: '价格',
+      title: '价格（￥）',
       dataIndex: 'price',
       key: 'price',
       align: 'center'
@@ -63,31 +75,47 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
           <div>
             <Button type="link" onClick={() => handleEdit(record)}>编辑</Button>
             <Button type="link">出库</Button>
-            <Button type="link" danger>删除</Button>
+            <Button type="link" danger onClick={() => deleteItem(record)}>删除</Button>
           </div>);
       }
     }
   ];
   const dateFormat = 'YYYY/MM/DD';
   const [form] = Form.useForm();
+  const [id, setId] = useState(null);
   const [optionsList] = useSelect();
   const [innerHeight] = useHeight(390);
   const [tableSource, setTableSource] = useState([]);
+
+  const [paginationOption, setPaginationOption] = useState({
+    total: 100,
+    current:1,
+    pageSize:10,
+  });
   const handleEdit = async (record: DataType) => {
     const res = await window.db.findOne({ id: record.id });
     const { code, data } = res;
+    setId(record.id);
     if (code === 200) {
-      changeStatus();
-      setTitle('编辑页面');
-      setIsEdit(false)
+      resetForm();
+      setTitle('编辑商品');
+      setIsEdit(false);
       data.createdAt = dayjs(data.createdAt);
       form.setFieldsValue(data);
     }
   };
-
-  const saveValue = (type:string) => {
+  const deleteItem = async (record: DataType) => {
+    const res = await window.db.deleteItem({ id: record.id });
+    console.log(res, 'resresresresresres');
+    if (res.code === 200) {
+      message.info(res.msg);
+    }
+    findList();
+  };
+  const saveValue = (type: string) => {
     form.validateFields().then(async (data) => {
       data.createdAt = dayjs().format('YYYY/MM/DD');
+      if (type === 'update') data.id = id;
       const saveObj: SaveInter = {
         type: 'OrderList',
         data
@@ -97,7 +125,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
       if (type === 'update') res = await window.db.updateValue(saveObj);
       if (res.code === 200) {
         message.info(res.msg);
-        changeStatus();
+        resetForm();
         findList();
       }
     }).catch((err) => {
@@ -105,19 +133,37 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
     });
   };
   const findList = async () => {
-    const res = await window.db.findValue({ page: 1, size: 10 });
+    const { current, pageSize } = paginationOption
+    console.log('paginationOption', paginationOption);
+    const res = await window.db.findValue({ page: current, size: pageSize });
     const { code, data: { result, count } } = res;
+    console.log(count,'2222');
     if (code === 200) setTableSource(result);
   };
+  const resetForm = () => {
+    changeStatus();
+    form.resetFields();
+  };
+  const tablePageChange = (pagination: any) => {
+    console.log('pagination',pagination);
+    setPaginationOption(pagination)
+  }
   useEffect(() => {
     findList();
   }, []);
 
   return (
     <div>
-      <Table bordered dataSource={tableSource} rowKey="id" columns={colums} scroll={{ y: innerHeight }}
+      <Table
+             pagination={paginationOption}
+             bordered
+             dataSource={tableSource}
+             rowKey="id"
+             columns={colums}
+             scroll={{ y: innerHeight }}
+             onChange={tablePageChange}
              className="mt-12" />
-      <Drawer open={visible} title={title} width={450} onClose={() => changeStatus()}>
+      <Drawer open={visible} title={title} width={450} onClose={() => resetForm()}>
         <Form
           form={form}
           name="order"
@@ -177,7 +223,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
             isEdit ? <Button type="primary" onClick={() => saveValue('save')}>保存</Button> :
               <Button type="primary" onClick={() => saveValue('update')}>更新</Button>
           }
-          <Button onClick={changeStatus}>取消</Button>
+          <Button onClick={resetForm}>取消</Button>
         </div>
       </Drawer>
     </div>
@@ -193,7 +239,7 @@ const OrderList = () => {
   };
   const addItem = () => {
     setIsEdit(true);
-    setTitle('新增商品')
+    setTitle('新增商品');
     changeStatus();
   };
   return (

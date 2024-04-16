@@ -35,16 +35,17 @@ export class DbConfig {
     })
   }
   async findValue({type='OrderList', page=1,size=10}){
+    console.log(page,size,'sizesizesize');
     return new Promise((resolve,reject) => {
       AppDataSource
         .getRepository(orderType[type])
         .createQueryBuilder(type)
-        .skip(page-1*size)
+        .skip((size*(page - 1)))
         .take(size)
         .getManyAndCount()
         .then(e =>{
           resolve({...this.resSucess,data:{result:e[0],count:e[1]}})
-        }).catch(err =>{
+        }).catch(() =>{
           reject(this.resError)
       })
     })
@@ -71,7 +72,7 @@ export class DbConfig {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   updateValue({type='OrderList',data}){
-    console.log('OrderList');
+    console.log('OrderList111111',data);
     return new Promise((resolve,reject) => {
       AppDataSource
         .createQueryBuilder()
@@ -79,12 +80,32 @@ export class DbConfig {
         .set(data)
         .where({id:data.id})
         .execute()
-        .then(e => {
-          console.log(e,'this is e ');
+        .then(() => {
+          resolve(this.resSucess)
         })
-        .catch(err =>{
-          console.log(err,'this is e ');
+        .catch(() =>{
+          reject(this.resError)
         })
+    })
+  }
+  //  删除数据
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  deleteItem({type='OrderList',id}){
+    return new Promise((resolve,reject) => {
+      AppDataSource
+        .createQueryBuilder()
+        .delete()
+        .from(orderType[type])
+        .where({id})
+        .execute()
+        .then(() => {
+          resolve(this.resSucess)
+        })
+        .catch(() => {
+          reject(this.resError)
+        })
+
     })
   }
 }
