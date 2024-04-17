@@ -1,13 +1,11 @@
-import { ILike } from 'typeorm';
+import { Like } from 'typeorm';
 
 import { AppDataSource } from '../index';
 import { GoodsColum } from '../model/goodsColum';
 import { OrderList } from '@/db/model/OrderList';
 import { OrderLog } from '@/db/model/OrderLog';
 import { ResType } from '@/pages/type';
-interface Params {
-  [key: string]: any; // 定义字符串类型的索引签名
-}
+import { removeEmpty } from '@/util';
 type OrderEntityType = typeof GoodsColum;
 const orderType: Record<string, OrderEntityType> = {
   'GoodsColum': GoodsColum,
@@ -41,20 +39,13 @@ export class DbConfig {
   }
 
   async findValue({ type = 'OrderList', page = 1, size = 10, params={} }) {
+    removeEmpty(params)
     return new Promise((resolve, reject) => {
       const queryBuilder = AppDataSource
         .getRepository(orderType[type])
         .createQueryBuilder(type);
-      Object.keys(params).forEach((column,index) => {
-        if (params[column]){
-          if (index === 0) {
-            queryBuilder.where({[`${column}`]:ILike(`%${params[column]}%`)});
-          }else{
-            queryBuilder.andWhere({[`${column}`]:ILike(`%${params[column]}%`)})
-          }
-        }
-      });
       queryBuilder
+        .where(params)
         .skip((size * (page - 1)))
         .take(size)
         .getManyAndCount()

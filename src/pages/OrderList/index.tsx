@@ -6,20 +6,24 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useSelect, useHeight } from '@/render/hooks';
 import { SaveInter, DataType } from '@/pages/type';
 import { CategoryEnum } from '@/db/model/enum';
-
+import OutOfOrder from '@/pages/OrderList/OutOfOrder';
 interface AddCom {
   changeStatus: () => void,
   visible: boolean,
   title: string,
   setTitle?: (title: string) => void,
   isEdit: boolean,
-  setIsEdit: (val: boolean) => void
+  setIsEdit: (val: boolean) => void,
+  searchform:object
 }
 
 
-const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTitle, isEdit, setIsEdit }) => {
+const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTitle, isEdit, setIsEdit,searchform }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
+  /**
+   * 弹窗逻辑
+   * */
+  const [modelOpen,setModelOpen] = useState(false)
   const colums: TableProps<DataType>['columns'] = [
     {
       title: '名称',
@@ -74,7 +78,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
         return (
           <div>
             <Button type="link" onClick={() => handleEdit(record)}>编辑</Button>
-            <Button type="link">出库</Button>
+            <Button type="link" onClick={() => outOfHandle(record)}>出库</Button>
             <Button type="link" danger onClick={() => deleteItem(record)}>删除</Button>
           </div>);
       }
@@ -108,6 +112,9 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
       form.setFieldsValue(data);
     }
   };
+  const outOfHandle = (record: DataType) => {
+    setModelOpen(true)
+  }
   const deleteItem = async (record: DataType) => {
     const res = await window.db.deleteItem({ id: record.id });
     console.log(res, 'resresresresresres');
@@ -137,7 +144,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
     });
   };
   const findList = async () => {
-    const res = await window.db.findValue({ page: pageOptions.current, size: pageOptions.pageSize,params:{ordername:'内田'} });
+    const res = await window.db.findValue({ page: pageOptions.current, size: pageOptions.pageSize,params:searchform });
     const { code, data: { result, count } } = res;
     setTotal(count)
     if (code === 200) setTableSource(result);
@@ -152,9 +159,14 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
   useLayoutEffect(() => { // 可以在state设置后立即获取数据
     findList()
   },[pageOptions])
+  useLayoutEffect(() => { //
+    setPageOptions({...pageOptions,current: 1})
+    findList()
+  },[searchform])
   useEffect(() => {
     findList();
   }, []);
+
 
   return (
     <div>
@@ -230,6 +242,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
           <Button onClick={resetForm}>取消</Button>
         </div>
       </Drawer>
+      <OutOfOrder open={modelOpen} setModelOpen={setModelOpen}/>
     </div>
   );
 };
@@ -238,6 +251,7 @@ const OrderList = () => {
   const [visible, setBVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [title, setTitle] = useState('新增商品');
+  const [searchFormValue, setSearchFormValue] = useState(undefined);
   const changeStatus = () => {
     setBVisible(!visible);
   };
@@ -247,13 +261,14 @@ const OrderList = () => {
     changeStatus();
   };
   const searchSubmit = (val: object) =>{
-    console.log(val,'valval');
+    setSearchFormValue(val)
   }
+
   return (
     <div>
       <Search addItem={addItem} search={searchSubmit}/>
       <AddOrderOrEdit visible={visible} changeStatus={changeStatus} title={title} setTitle={setTitle} isEdit={isEdit}
-                      setIsEdit={setIsEdit} />
+                      setIsEdit={setIsEdit} searchform={searchFormValue} />
     </div>
   );
 };
