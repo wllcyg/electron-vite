@@ -2,7 +2,7 @@ import Search from '@/pages/OrderList/Search';
 import dayjs from 'dayjs';
 import { Drawer, Form, Input, Button, InputNumber, DatePicker, message, Select, Table } from 'antd';
 import type { TableProps,PaginationProps } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useSelect, useHeight } from '@/render/hooks';
 import { SaveInter, DataType } from '@/pages/type';
 import { CategoryEnum } from '@/db/model/enum';
@@ -86,12 +86,16 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
   const [optionsList] = useSelect();
   const [innerHeight] = useHeight(390);
   const [tableSource, setTableSource] = useState([]);
-
-  const [paginationOption, setPaginationOption] = useState({
-    total: 100,
-    current:1,
-    pageSize:10,
+  const [pageOptions, setPageOptions] = useState({
+    pageSize: 10,
+    current: 1,
   });
+  const [total, setTotal] = useState(0);
+  const pageProps= {
+    total,
+    current:pageOptions.current,
+    pageSize:pageOptions.pageSize,
+  }
   const handleEdit = async (record: DataType) => {
     const res = await window.db.findOne({ id: record.id });
     const { code, data } = res;
@@ -133,21 +137,21 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
     });
   };
   const findList = async () => {
-    const { current, pageSize } = paginationOption
-    console.log('paginationOption', paginationOption);
-    const res = await window.db.findValue({ page: current, size: pageSize });
+    const res = await window.db.findValue({ page: pageOptions.current, size: pageOptions.pageSize,params:{ordername:'内田'} });
     const { code, data: { result, count } } = res;
-    console.log(count,'2222');
+    setTotal(count)
     if (code === 200) setTableSource(result);
   };
   const resetForm = () => {
     changeStatus();
     form.resetFields();
   };
-  const tablePageChange = (pagination: any) => {
-    console.log('pagination',pagination);
-    setPaginationOption(pagination)
+  const tablePageChange =  (pagination: any) => {
+    setPageOptions({ ...pagination });
   }
+  useLayoutEffect(() => { // 可以在state设置后立即获取数据
+    findList()
+  },[pageOptions])
   useEffect(() => {
     findList();
   }, []);
@@ -155,7 +159,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
   return (
     <div>
       <Table
-             pagination={paginationOption}
+             pagination={pageProps}
              bordered
              dataSource={tableSource}
              rowKey="id"
@@ -242,9 +246,12 @@ const OrderList = () => {
     setTitle('新增商品');
     changeStatus();
   };
+  const searchSubmit = (val: object) =>{
+    console.log(val,'valval');
+  }
   return (
     <div>
-      <Search addItem={addItem} />
+      <Search addItem={addItem} search={searchSubmit}/>
       <AddOrderOrEdit visible={visible} changeStatus={changeStatus} title={title} setTitle={setTitle} isEdit={isEdit}
                       setIsEdit={setIsEdit} />
     </div>
