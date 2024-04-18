@@ -1,11 +1,11 @@
 import { lazy } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createHashRouter, Navigate } from 'react-router-dom';
 const LayoutComponents = lazy(() => import('@/render/layout'));
 
 const OrderList = lazy(() => import('@/pages/OrderList'));
 const SellsList = lazy(() => import('@/pages/SellList'));
 const Dashboard = lazy(() => import('@/pages/DashBoard'));
-const routers = createBrowserRouter([
+const routers = createHashRouter([
   {
     path: '/',
     element: <Navigate to='/home' />,

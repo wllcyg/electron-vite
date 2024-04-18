@@ -2,7 +2,7 @@
 const Index = () => {
   return (
     <div>
-      首页
+      <h1>后台管理系统</h1>
     </div>
   );
 };

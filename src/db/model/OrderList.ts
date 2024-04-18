@@ -1,4 +1,4 @@
-import { GoodsColum } from '@/db/model/goodsColum';
+import { GoodsColum } from '../model/goodsColum';
 import { Column, Entity } from 'typeorm';
 @Entity()
 export class OrderList extends GoodsColum{

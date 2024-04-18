@@ -1,4 +1,4 @@
-import { GoodsColum } from '@/db/model/goodsColum';
+import { GoodsColum } from '../model/goodsColum';
 import { Column, Entity } from 'typeorm';
 @Entity()
 export class OrderLog extends GoodsColum{
@@ -13,15 +13,15 @@ export class OrderLog extends GoodsColum{
   @Column('decimal')
   outOfWare: number;
 
-  //入库时间
+  //出库时间
   @Column('text')
   outOfWareDate: string;
 
   // 出库记录图片
-  @Column('text')
-  imgUrl: string;
+  @Column('text',{nullable:true})
+  imgUrl: string | null;
 
   //备注
-  @Column('text')
-  remark: string;
+  @Column('text',{nullable:true})
+  remark: string | null;
 }

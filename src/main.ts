@@ -4,7 +4,7 @@ import 'reflect-metadata'
 
 import { AppDataSource } from './db';
 import dbConfig from '@/db/server';
-import controller from '@/db/controller';
+import controller from './db/controller';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -15,6 +15,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1480,
     height: 800,
+
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },

@@ -24,6 +24,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
    * 弹窗逻辑
    * */
   const [modelOpen,setModelOpen] = useState(false)
+  const [recordValue, setRecordValue] = useState(null);
   const colums: TableProps<DataType>['columns'] = [
     {
       title: '名称',
@@ -113,6 +114,7 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
     }
   };
   const outOfHandle = (record: DataType) => {
+    setRecordValue(record)
     setModelOpen(true)
   }
   const deleteItem = async (record: DataType) => {
@@ -160,14 +162,12 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
     findList()
   },[pageOptions])
   useLayoutEffect(() => { //
-    setPageOptions({...pageOptions,current: 1})
+    setPageOptions({...pageOptions,current: 1,pageSize:10})
     findList()
   },[searchform])
   useEffect(() => {
     findList();
   }, []);
-
-
   return (
     <div>
       <Table
@@ -242,7 +242,9 @@ const AddOrderOrEdit: React.FC<AddCom> = ({ visible, changeStatus, title, setTit
           <Button onClick={resetForm}>取消</Button>
         </div>
       </Drawer>
-      <OutOfOrder open={modelOpen} setModelOpen={setModelOpen}/>
+      {
+        modelOpen && <OutOfOrder open={modelOpen} setModelOpen={setModelOpen} rescord={recordValue} findList={findList}/>
+      }
     </div>
   );
 };
@@ -266,7 +268,7 @@ const OrderList = () => {
 
   return (
     <div>
-      <Search addItem={addItem} search={searchSubmit}/>
+      <Search addItem={addItem} search={searchSubmit} showAdd={true}/>
       <AddOrderOrEdit visible={visible} changeStatus={changeStatus} title={title} setTitle={setTitle} isEdit={isEdit}
                       setIsEdit={setIsEdit} searchform={searchFormValue} />
     </div>

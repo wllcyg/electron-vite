@@ -2,10 +2,10 @@ import { Like } from 'typeorm';
 
 import { AppDataSource } from '../index';
 import { GoodsColum } from '../model/goodsColum';
-import { OrderList } from '@/db/model/OrderList';
-import { OrderLog } from '@/db/model/OrderLog';
-import { ResType } from '@/pages/type';
-import { removeEmpty } from '@/util';
+import { OrderList } from '../model/OrderList';
+import { OrderLog } from '../model/OrderLog';
+import { ResType } from '../../pages/type';
+import { removeEmpty } from '../util';
 type OrderEntityType = typeof GoodsColum;
 const orderType: Record<string, OrderEntityType> = {
   'GoodsColum': GoodsColum,
@@ -21,7 +21,7 @@ export class DbConfig {
   private _size: number;
 
   async save({ type, data }: { type: keyof typeof orderType; data: any[] }) {
-
+    console.log(data,'this is datas');
     return new Promise((resolve, reject) => {
       AppDataSource
         .createQueryBuilder()
@@ -33,6 +33,7 @@ export class DbConfig {
         .execute().then(e => {
         resolve(this.resSucess);
       }).catch(e => {
+        console.log(e,'this is save err');
         reject(this.resError);
       });
     });
@@ -60,7 +61,6 @@ export class DbConfig {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   findOne({ type = 'OrderList', id }) {
-    console.log(type, id, 'OrderListOrderListOrderList');
     return new Promise((resolve, reject) => {
       AppDataSource
         .getRepository(orderType[type])
@@ -80,7 +80,6 @@ export class DbConfig {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   updateValue({ type = 'OrderList', data }) {
-    console.log('OrderList111111', data);
     return new Promise((resolve, reject) => {
       AppDataSource
         .createQueryBuilder()

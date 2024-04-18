@@ -41,6 +41,7 @@
   "license": "MIT",
   "dependencies": {
     "antd": "^5.16.1",
+    "calc-number": "^0.1.0",
     "dayjs": "^1.11.10",
     "electron-squirrel-startup": "^1.0.0",
     "eslint-plugin-react": "^7.34.1",
