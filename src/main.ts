@@ -9,7 +9,6 @@ import controller from './db/controller';
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -17,6 +16,7 @@ const createWindow = () => {
     height: 800,
 
     webPreferences: {
+      devTools:false,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
