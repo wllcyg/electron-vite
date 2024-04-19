@@ -8,13 +8,13 @@ import controller from './db/controller';
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1480,
     height: 800,
 
     webPreferences: {
+      devTools: false,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
@@ -39,7 +39,7 @@ app.on('ready', () => {
   AppDataSource.initialize().then(e => {
     console.log('this is ok')
   }).catch(e => {
-    console.log('this is error',e)
+    console.log('this is error', e)
   })
   controller()
 });
