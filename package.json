@@ -1,8 +1,8 @@
 {
-  "name": "my-app",
-  "productName": "my-app",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "name": "后台管理系统",
+  "productName": "后台管理系统",
+  "version": "0.0.1",
+  "description": "家具后台",
   "main": ".vite/build/main.js",
   "scripts": {
     "dev": "electron-forge start",
