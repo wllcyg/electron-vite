@@ -1,5 +1,3 @@
-import { Like } from 'typeorm';
-
 import { AppDataSource } from '../index';
 import { GoodsColum } from '../model/goodsColum';
 import { OrderList } from '../model/OrderList';

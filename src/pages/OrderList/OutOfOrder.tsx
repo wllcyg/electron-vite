@@ -1,8 +1,8 @@
+import * as math from 'mathjs'
 import { Modal, Form, Input, InputNumber, message, DatePicker } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataType } from '@/pages/type';
 import dayjs from 'dayjs';
-import calcnumber from 'calc-number'
 interface OutOrderInterFace {
   open: boolean;
   setModelOpen: (open: boolean) => void;
@@ -17,7 +17,6 @@ const OutOfOrder: React.FC<OutOrderInterFace> = ({ open, setModelOpen, rescord, 
     form.validateFields().then(async data => {
       // 保存原始值,生成新的历史记录
       rescord.count = rescord.count - data.outOfWare;
-      console.log(rescord,'rescordrescordrescord');
       const saveObj = {
         type: 'OrderList',
         data: rescord
@@ -31,7 +30,9 @@ const OutOfOrder: React.FC<OutOrderInterFace> = ({ open, setModelOpen, rescord, 
         tempObj.specification = specification;
         tempObj.category = category;
         // tempObj.imgUrl = '';
-        tempObj.profit = calcnumber(`${data.sell}-${rescord.price}`);
+        tempObj.profit =  math.format(
+          math.subtract(math.bignumber(data.sell), math.bignumber(rescord.price))
+        )
         const LogList = {
           type: 'OrderLog',
           data: {
@@ -50,6 +51,7 @@ const OutOfOrder: React.FC<OutOrderInterFace> = ({ open, setModelOpen, rescord, 
     });
 
   };
+
   return (
     <div>
       <Modal title="出库商品" open={open} onCancel={() => setModelOpen(false)} onOk={handleSSubmit}>
