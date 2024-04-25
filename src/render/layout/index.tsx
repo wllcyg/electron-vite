@@ -3,7 +3,7 @@ import {  Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 const { Header, Content } = Layout;
-import { FloatButton } from "antd";
+import FloatMenu from '@/render/layout/FloatMenu';
 const items = [
   {key:'/', label:'首页'},
   {key:'/order', label:'库存列表'},
@@ -55,6 +55,7 @@ const LayoutComponent = () => {
           <Outlet/>
         </div>
       </Content>
+      <FloatMenu/>
     </Layout>
   );
 };
