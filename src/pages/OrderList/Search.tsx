@@ -1,7 +1,7 @@
-import { Card, Form, Input, Button, DatePicker } from 'antd';
-import { SearchListWrapper } from '@/pages/OrderList/style';
-import React from 'react';
-import dayjs from 'dayjs';
+import { Card, Form, Input, Button, DatePicker } from "antd";
+import { SearchListWrapper } from "@/pages/OrderList/style";
+import React from "react";
+import dayjs from "dayjs";
 
 interface ComProps {
   addItem?: () => void;
@@ -17,10 +17,10 @@ const Search: React.FC<ComProps> = (props) => {
   const handleSearch = () => {
     const obj = form.getFieldsValue();
     if (obj.createdAt) {
-      obj.createdAt = dayjs(obj.createdAt).format('YYYY/MM/DD');
+      obj.createdAt = dayjs(obj.createdAt).format("YYYY/MM/DD");
     }
     if (obj.outOfWareDate) {
-      obj.outOfWareDate = dayjs(obj.outOfWareDate).format('YYYY/MM/DD');
+      obj.outOfWareDate = dayjs(obj.outOfWareDate).format("YYYY/MM/DD");
     }
     props.search(obj);
   };
@@ -39,46 +39,38 @@ const Search: React.FC<ComProps> = (props) => {
           autoComplete="off"
           layout="inline"
         >
-          <Form.Item
-            label="名称"
-            name="ordername"
-          >
+          <Form.Item label="名称" name="ordername">
             <Input />
           </Form.Item>
-          <Form.Item
-            label="规格"
-            name="specification"
-          >
+          <Form.Item label="规格" name="specification">
             <Input />
           </Form.Item>
-          {
-            props.showAdd &&
-            <Form.Item
-              label="入库时间"
-              name="createdAt"
-            >
+          {props.showAdd && (
+            <Form.Item label="入库时间" name="createdAt">
               <DatePicker size="middle" />
             </Form.Item>
-          }
-          {
-            !props.showAdd &&
-            <Form.Item
-              label="出库时间"
-              name="outOfWareDate"
-            >
+          )}
+          {!props.showAdd && (
+            <Form.Item label="出库时间" name="outOfWareDate">
               <DatePicker size="middle" />
             </Form.Item>
-          }
+          )}
         </Form>
         <div className="search-list">
-          <Button type="primary" onClick={handleSearch}>查询</Button>
+          <Button type="primary" onClick={handleSearch}>
+            查询
+          </Button>
           <Button onClick={reset}>重置</Button>
           {props.showAdd && <Button onClick={() => addOrder()}>新增</Button>}
+          {props.showAdd && (
+            <Button type="primary" onClick={() => addOrder()}>
+              导入数据
+            </Button>
+          )}
         </div>
       </Card>
     </SearchListWrapper>
-  )
-    ;
+  );
 };
 
 export default Search;
