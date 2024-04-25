@@ -1,12 +1,13 @@
 import { FloatButton,Switch } from "antd";
 import { useState } from 'react'
-import { CommentOutlined, CustomerServiceOutlined } from '@ant-design/icons';
+import { CommentOutlined, AppstoreAddOutlined } from '@ant-design/icons';
 const FloatMenu = () => {
   const [open, setOpen] = useState(false);
 
   const onChange = (checked: boolean) => {
     setOpen(checked);
   };
+
   return (
     <div>
       <FloatButton.Group
@@ -14,9 +15,9 @@ const FloatMenu = () => {
         open={open}
         trigger="click"
         style={{ right: 24 }}
-        icon={<CustomerServiceOutlined />}
+        icon={<AppstoreAddOutlined />}
       >
-        <FloatButton />
+        <FloatButton  />
         <FloatButton icon={<CommentOutlined />} />
       </FloatButton.Group>
     </div>
