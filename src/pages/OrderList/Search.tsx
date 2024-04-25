@@ -74,6 +74,7 @@ const Search: React.FC<ComProps> = (props) => {
           <Button type="primary" onClick={handleSearch}>查询</Button>
           <Button onClick={reset}>重置</Button>
           {props.showAdd && <Button onClick={() => addOrder()}>新增</Button>}
+          {props.showAdd && <Button type='primary' onClick={() => addOrder()}>导入数据</Button>}
         </div>
       </Card>
     </SearchListWrapper>
