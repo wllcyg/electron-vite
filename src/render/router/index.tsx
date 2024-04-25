@@ -5,6 +5,7 @@ const LayoutComponents = lazy(() => import('@/render/layout'));
 const OrderList = lazy(() => import('@/pages/OrderList'));
 const SellsList = lazy(() => import('@/pages/SellList'));
 const Dashboard = lazy(() => import('@/pages/DashBoard'));
+const RtkCom = lazy(() => import('@/pages/Rtk/RtxCom'))
 const routers = createHashRouter([
   {
     path: '/',
@@ -25,6 +26,10 @@ const routers = createHashRouter([
       {
         path:'/sells',
         element:<SellsList />
+      },
+      {
+        path:'/rtk',
+        element:<RtkCom />
       }
     ]
   },
