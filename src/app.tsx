@@ -1,15 +1,20 @@
 import * as ReactDOM from "react-dom/client";
 import React, { Suspense } from 'react';
+import { Provider } from 'react-redux'
 import { RouterProvider } from 'react-router-dom';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider,Spin } from 'antd';
 import routers from '@/render/router';
-import { Spin } from 'antd'
 import './index.css'
+import store from '@/render/store';
 ReactDOM.createRoot(document.getElementById("app")).render(
-    <Suspense fallback={<Spin fullscreen></Spin>}>
-      <ConfigProvider locale={zhCN}>
-        <RouterProvider router={routers} />
-      </ConfigProvider>
-    </Suspense>
+  <Provider store={store}>
+    <ConfigProvider theme={{cssVar:true,hashed:false}}>
+      <Suspense fallback={<Spin fullscreen></Spin>}>
+        <ConfigProvider locale={zhCN}>
+          <RouterProvider router={routers} />
+        </ConfigProvider>
+      </Suspense>
+    </ConfigProvider>
+  </Provider>
 );
