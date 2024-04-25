@@ -3,11 +3,13 @@ import {  Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 const { Header, Content } = Layout;
-
+import FloatMenu from '@/render/layout/FloatMenu';
 const items = [
   {key:'/', label:'首页'},
   {key:'/order', label:'库存列表'},
   {key:'/sells', label:'出库列表'},
+  {key:'/rtk', label:'redux-tools'},
+
 ]
 
 const LayoutComponent = () => {
@@ -16,7 +18,6 @@ const LayoutComponent = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const menuItemClick : MenuProps['onClick'] = (e) => {
-    console.log(2222222);
     navigate(e.key)
   }
   return (
@@ -40,6 +41,7 @@ const LayoutComponent = () => {
           style={{ flex: 1, minWidth: 0 }}
           onClick={menuItemClick}
         />
+
       </Header>
       <Content >
         <div
@@ -53,6 +55,7 @@ const LayoutComponent = () => {
           <Outlet/>
         </div>
       </Content>
+      <FloatMenu/>
     </Layout>
   );
 };
