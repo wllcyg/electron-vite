@@ -12,9 +12,15 @@ const db: versionInt = {
   updateValue:(value) => ipcRenderer.invoke('updateValue',value),
   deleteItem:(value) => ipcRenderer.invoke('deleteItem',value),
 }
+const system: versionInt = {
+  openBrowser:(value) => ipcRenderer.sendSync('openBrowser',value),
+}
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('db', db)
+    contextBridge.exposeInMainWorld('system', system)
+
+
   } catch (error) {
     console.error(error)
   }

@@ -1,62 +1,66 @@
-import React from 'react';
-import {  Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme, ConfigProvider } from 'antd';
 import type { MenuProps } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
+
 const { Header, Content } = Layout;
 import FloatMenu from '@/render/layout/FloatMenu';
-const items = [
-  {key:'/', label:'首页'},
-  {key:'/order', label:'库存列表'},
-  {key:'/sells', label:'出库列表'},
-  {key:'/rtk', label:'redux-tools'},
+import { useAppSelector } from '@/render/hooks/redux-type';
+import { themeValue } from '@/render/store/theme/Slice';
+import { useEffect, useState } from 'react';
 
-]
+const items = [
+  { key: '/', label: '首页' },
+  { key: '/order', label: '库存列表' },
+  { key: '/sells', label: '出库列表' },
+  { key: '/rtk', label: 'redux-tools' }
+];
 
 const LayoutComponent = () => {
-  const navigate = useNavigate()
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-  const menuItemClick : MenuProps['onClick'] = (e) => {
-    navigate(e.key)
-  }
+  const navigate = useNavigate();
+  const [innerHeight, setInnerHeight] = useState(null);
+  const menuItemClick: MenuProps['onClick'] = (e) => {
+    navigate(e.key);
+  };
+  const {themKey} = useAppSelector(themeValue);
+  useEffect(() =>{
+    setInnerHeight(window.innerHeight - 90)
+  },[])
   return (
-    <Layout>
-      <Header
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 1,
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['/']}
-          items={items}
-          style={{ flex: 1, minWidth: 0 }}
-          onClick={menuItemClick}
-        />
-
-      </Header>
-      <Content >
-        <div
+    <ConfigProvider theme={{
+      algorithm:themKey === 'darkAlgorithm' ? theme.darkAlgorithm : theme.defaultAlgorithm
+    }}>
+      <Layout>
+        <Header
           style={{
-            padding: 24,
-            minHeight: 380,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            background: 'transparent',
+            padding: 0
           }}
         >
-          <Outlet/>
-        </div>
-      </Content>
-      <FloatMenu/>
-    </Layout>
+          <Menu
+            mode="horizontal"
+            defaultSelectedKeys={['/']}
+            items={items}
+            style={{ minWidth: 0, width: '100%' }}
+            onClick={menuItemClick}
+          />
+
+        </Header>
+        <Content>
+          <div
+            style={{
+              padding: 24,
+              minHeight: innerHeight
+            }}
+          >
+            <Outlet />
+          </div>
+        </Content>
+        <FloatMenu />
+      </Layout>
+    </ConfigProvider>
   );
 };
 

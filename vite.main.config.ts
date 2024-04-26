@@ -23,9 +23,9 @@ export default defineConfig((env) => {
     resolve: {
       // Load the Node.js entry.
       mainFields: ['module', 'jsnext:main', 'jsnext'],
-      // alias: {
-      //   '@': `${root}/src`,
-      // }
+      alias: {
+        '@': `${root}/src`,
+      }
     },
   };
 
