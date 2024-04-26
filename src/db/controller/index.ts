@@ -18,4 +18,5 @@ export default function controller (){
   ipcMain.handle('deleteItem', (_, value) => {
     return dbConfig.deleteItem(value)
   })
+
 }

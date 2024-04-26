@@ -9,12 +9,10 @@ import './index.css'
 import store from '@/render/store';
 ReactDOM.createRoot(document.getElementById("app")).render(
   <Provider store={store}>
-    <ConfigProvider theme={{cssVar:true,hashed:false}}>
       <Suspense fallback={<Spin fullscreen></Spin>}>
         <ConfigProvider locale={zhCN}>
           <RouterProvider router={routers} />
         </ConfigProvider>
       </Suspense>
-    </ConfigProvider>
   </Provider>
 );

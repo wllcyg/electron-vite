@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import path from 'path';
 import 'reflect-metadata'
-
+import sysControl from '@/system/handleOn';
 import { AppDataSource } from './db';
 import controller from './db/controller';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -12,7 +12,6 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1480,
     height: 800,
-
     webPreferences: {
       devTools: false,
       preload: path.join(__dirname, 'preload.js'),
@@ -25,7 +24,7 @@ const createWindow = () => {
   } else {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
-
+  sysControl()
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };

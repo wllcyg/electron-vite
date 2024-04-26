@@ -21,7 +21,8 @@ declare global {
     VITE_NAME: `${string}_VITE_NAME`;
   }
   interface Window{
-    db:any
+    db:any,
+    system:any
   }
 }
 
