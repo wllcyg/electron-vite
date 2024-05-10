@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, desktopCapturer, net } from 'electron';
 import path from 'path';
 import 'reflect-metadata'
 import sysControl from '@/system/handleOn';
 import { AppDataSource } from './db';
 import controller from './db/controller';
+import OSS from './oss/controller';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -13,11 +14,17 @@ const createWindow = () => {
     width: 1480,
     height: 800,
     webPreferences: {
-      devTools: false,
+      devTools: true,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
-
+  desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
+    for (const source of sources) {
+      console.log(source, 'this is name');
+      mainWindow.webContents.send('SET_SOURCE', source.id)
+      return
+    }
+  })
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -41,6 +48,15 @@ app.on('ready', () => {
     console.log('this is error', e)
   })
   controller()
+  OSS()
+  // 模拟请求
+  const request = net.request('https://www.dmoe.cc/random.php')
+  console.log(1111111111111, request);
+
+  request.on('response', (response) => {
+    console.log(response, 'responseresponseresponseresponse');
+
+  })
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

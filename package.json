@@ -5,7 +5,7 @@
   "description": "家具后台",
   "main": ".vite/build/main.js",
   "scripts": {
-    "dev": "electron-forge start",
+    "dev": "chcp 65001 && electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -42,7 +42,9 @@
   "license": "MIT",
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
+    "ali-oss": "^6.20.0",
     "antd": "^5.16.1",
+    "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "electron-squirrel-startup": "^1.0.0",
     "eslint-plugin-react": "^7.34.1",

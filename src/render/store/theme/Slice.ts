@@ -4,7 +4,7 @@ interface ThemeObj {
   themKey:'darkAlgorithm'|'lightAlgorithm'
 }
 const initialState: ThemeObj = {
-  themKey:'darkAlgorithm',
+  themKey:'lightAlgorithm',
 }
 export const themeSlice = createSlice({
   name: 'theme',

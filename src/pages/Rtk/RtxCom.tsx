@@ -1,12 +1,12 @@
 import { Button, Input } from 'antd';
 import { useAppSelector,useAppDispatch } from '@/render/hooks/redux-type'
 import { selectCount, increment,incrementByAmount,decrement } from '@/render/store/counter/Slice';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 const Rtk = () => {
   const count = useAppSelector(selectCount)
   const dispatch = useAppDispatch()
-  console.log(count);
   const [innerValue, setInnerValue] = useState<number | string>();
+
   return (
     <div>
       <h1>{count}</h1>

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import dbConfig from '../server';
-export default function controller (){
+export default function controller() {
   ipcMain.handle('saveValue', (_, value) => {
     console.log('this is saveValue');
     return dbConfig.save(value)
