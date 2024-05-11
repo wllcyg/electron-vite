@@ -1,0 +1,1 @@
+export type fetchType = {type:number,imageName?:string,fetchUrl:string,Suffix?:string}

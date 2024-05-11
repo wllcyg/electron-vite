@@ -20,7 +20,6 @@ const createWindow = () => {
   });
   desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
     for (const source of sources) {
-      console.log(source, 'this is name');
       mainWindow.webContents.send('SET_SOURCE', source.id)
       return
     }
@@ -49,14 +48,7 @@ app.on('ready', () => {
   })
   controller()
   OSS()
-  // 模拟请求
-  const request = net.request('https://www.dmoe.cc/random.php')
-  console.log(1111111111111, request);
 
-  request.on('response', (response) => {
-    console.log(response, 'responseresponseresponseresponse');
-
-  })
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

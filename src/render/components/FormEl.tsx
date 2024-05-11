@@ -1,10 +1,11 @@
-import { Form, Input, Select, Button, Space } from "antd";
+import { Form, Input, Select, Button, Space,InputNumber } from "antd";
+import React from 'react';
 type LayoutType = Parameters<typeof Form>[0]["layout"];
 export interface FormProps {
   name: string;
   rules?: any[];
   label: string;
-  type: "Input" | "Select";
+  type: "Input" | "Select" | "InputNumber";
   options?: { label: string; value: string | number | boolean }[];
 }
 interface Props {
@@ -19,6 +20,8 @@ interface Props {
     okTxt?: string;
     cancelTxt?: string;
   };
+  showCancel?: boolean;
+  children?: React.ReactNode;
 }
 const FromEl = ({
   LayoutType = "inline",
@@ -29,6 +32,8 @@ const FromEl = ({
   component,
   FinishEvent,
   btnTxt,
+  showCancel=false,
+  children
 }: Props) => {
   const { labelCol, wrapperCol } = overallArrange;
   const { okTxt = "提交", cancelTxt = "重置" } = btnTxt || {};
@@ -54,9 +59,13 @@ const FromEl = ({
             RenderComponent = <Input placeholder={`输入${label}`} />;
             break;
           case "Select":
-            RenderComponent = <Select options={options} />;
-          default:
+            RenderComponent = <Select options={options} style={{minWidth: 180}} />;
             break;
+          case "InputNumber":
+            RenderComponent = <InputNumber placeholder={`输入${label}`}/>;
+            break;
+          // eslint-disable-next-line no-fallthrough
+          default:
         }
         return (
           <Form.Item
@@ -75,9 +84,12 @@ const FromEl = ({
           <Button type="primary" htmlType="submit">
             {okTxt}
           </Button>
-          <Button type="dashed" htmlType="reset">
-            {cancelTxt}
-          </Button>
+          {
+            showCancel && <Button type="dashed" htmlType="reset">
+              {cancelTxt}
+            </Button>
+          }
+          {children}
         </Space>
       </Form.Item>
     </Form>

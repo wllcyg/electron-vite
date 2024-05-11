@@ -10,7 +10,6 @@ type Client = {
 export default class OssSingleton {
   private static instance: OssSingleton;
   Client: null
-  private constructor() { }
   public static getInstance(): OssSingleton {
     if (!OssSingleton.instance) {
       OssSingleton.instance = new OssSingleton();

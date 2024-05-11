@@ -3,23 +3,25 @@ import { GoodsColum } from '../model/goodsColum';
 import { OrderList } from '../model/OrderList';
 import { OrderLog } from '../model/OrderLog';
 import { ResType } from '../../pages/type';
+import { ImageMode } from '../model/ImageMod';
 import { removeEmpty } from '../util';
-type OrderEntityType = typeof GoodsColum;
+type OrderEntityType = typeof GoodsColum | typeof ImageMode;
 const orderType: Record<string, OrderEntityType> = {
   'GoodsColum': GoodsColum,
   'OrderList': OrderList,
-  'OrderLog': OrderLog
+  'OrderLog': OrderLog,
+  'ImageMode': ImageMode
 };
 
 export class DbConfig {
-// 插入数据操作
+  // 插入数据操作
   resSucess: ResType = { code: 200, msg: '操作成功!' };
   resError: ResType = { code: 203, msg: '操作失败请稍后!' };
   private _page: number;
   private _size: number;
 
   async save({ type, data }: { type: keyof typeof orderType; data: any[] }) {
-    console.log(data,'this is datas');
+    console.log(data, type, 'this is datas');
     return new Promise((resolve, reject) => {
       AppDataSource
         .createQueryBuilder()
@@ -29,15 +31,15 @@ export class DbConfig {
         // @ts-ignore
         .values([data])
         .execute().then(e => {
-        resolve(this.resSucess);
-      }).catch(e => {
-        console.log(e,'this is save err');
-        reject(this.resError);
-      });
+          resolve(this.resSucess);
+        }).catch(e => {
+          console.log(e, 'this is save err');
+          reject(this.resError);
+        });
     });
   }
 
-  async findValue({ type = 'OrderList', page = 1, size = 10, params={} }) {
+  async findValue({ type = 'OrderList', page = 1, size = 10, params = {} }) {
     removeEmpty(params)
     return new Promise((resolve, reject) => {
       const queryBuilder = AppDataSource
@@ -51,8 +53,8 @@ export class DbConfig {
         .then(e => {
           resolve({ ...this.resSucess, data: { result: e[0], count: e[1] } });
         }).catch(() => {
-        reject(this.resError);
-      });
+          reject(this.resError);
+        });
     });
   }
 

@@ -17,6 +17,7 @@ const system: versionInt = {
 const OSS: versionInt = {
   clientOss: (value) => ipcRenderer.invoke('Client-OSS', value),
   checkOssStatus: () => ipcRenderer.invoke('Check-OSS-Status'),
+  getImage: (value) => ipcRenderer.invoke('Get-Image',value),
 }
 
 if (process.contextIsolated) {
