@@ -11,10 +11,10 @@ const Alioss = () => {
   ];
   const FinishEvent = async (values: any) => {
     const res = await window.OSS.clientOss({
-      bucket: "lianwan",
-      region: "oss-cn-beijing",
-      accessKeyId: "LTAI5tDUEUxsCcVUvjsXfcjd",
-      accessKeySecret: "JRheG0fTtbwuhxkZFrzpg1QxWFKR8o",
+      bucket: "",
+      region: "",
+      accessKeyId: "",
+      accessKeySecret: "",
     });
     console.log(res, "this is value from el");
   };
