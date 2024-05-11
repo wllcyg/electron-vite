@@ -10,7 +10,12 @@ const Alioss = () => {
     { name: "accessKeySecret", label: "AccessKey Secret", type: "Input" },
   ];
   const FinishEvent = async (values: any) => {
-    const res = await window.OSS.clientOss(values);
+    const res = await window.OSS.clientOss({
+      bucket: "lianwan",
+      region: "oss-cn-beijing",
+      accessKeyId: "LTAI5tDUEUxsCcVUvjsXfcjd",
+      accessKeySecret: "JRheG0fTtbwuhxkZFrzpg1QxWFKR8o",
+    });
     console.log(res, "this is value from el");
   };
   const checkStatus = async () => {
