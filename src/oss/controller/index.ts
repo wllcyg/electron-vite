@@ -28,11 +28,13 @@ export default function OSS() {
       if (result.status === 200) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        console.log('this is img to url');
+        
         return dbConfig.save({ type: 'ImageMode', data: { type, url: `${imgName}` } });
+
       } else {
         return Promise.reject({ code: 203, msg: '操作失败请稍后!' });
       }
-
     }
   });
 }
