@@ -29,7 +29,7 @@ export default function OSS() {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         console.log('this is img to url');
-        
+
         return dbConfig.save({ type: 'ImageMode', data: { type, url: `${imgName}` } });
 
       } else {

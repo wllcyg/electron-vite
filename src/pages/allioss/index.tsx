@@ -43,12 +43,7 @@ const Alioss = () => {
     },
   ];
   const FinishEvent = async (values: any) => {
-    await window.OSS.clientOss({
-      bucket: "",
-      region: "",
-      accessKeyId: "",
-      accessKeySecret: "",
-    });
+    await window.OSS.clientOss(values);
     checkStatus();
   };
   const checkStatus = async () => {
